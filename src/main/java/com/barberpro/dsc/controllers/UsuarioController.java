@@ -1,5 +1,6 @@
 package com.barberpro.dsc.controllers;
 
+import com.barberpro.dsc.dto.BarbeiroCadastroDTO;
 import com.barberpro.dsc.dto.ClienteCadastroDTO;
 import com.barberpro.dsc.dto.UsuarioResponseDTO;
 import com.barberpro.dsc.services.CadastroService;
@@ -29,15 +30,17 @@ public class UsuarioController {
     }
 
     @PostMapping("/barbeiros")
-    public ResponseEntity<Void> cadastrarBarbeiro(/*@Valid @RequestBody BarbeiroCadastroDTO dto*/) {
-        // Lógica para chamar o service e cadastrar um barbeiro
-        // Esta rota deverá ser protegida para ser acessada apenas por administradores
-        return ResponseEntity.status(201).build(); // Retorna 201 Created
+    public ResponseEntity<UsuarioResponseDTO> cadastrarBarbeiro(@Valid @RequestBody BarbeiroCadastroDTO dto) {
+        UsuarioResponseDTO novoUsuario = cadastroService.cadastrarBarbeiro(dto);
+
+        URI uri = ServletUriComponentsBuilder.fromPath("/api/barbeiros/{id}")
+                .buildAndExpand(novoUsuario.id()).toUri();
+
+        return ResponseEntity.created(uri).body(novoUsuario);
     }
 
     @GetMapping("/perfil")
     public ResponseEntity<Void> getPerfil() {
-        // Lógica para buscar os dados do usuário que está logado (usando o Spring Security Context)
-        return ResponseEntity.ok().build(); // Retorna o DTO com os dados do usuário
+        return ResponseEntity.ok().build();
     }
 }

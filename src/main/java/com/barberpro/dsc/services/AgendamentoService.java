@@ -75,6 +75,14 @@ public class AgendamentoService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public AgendamentoResponseDTO buscarPorId(Long id) {
+        Agendamento agendamento = agendamentoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado com o id: " + id));
+
+        return new AgendamentoResponseDTO(agendamento);
+    }
+
     @Transactional
     public void cancelar(Long id) {
         Agendamento agendamento = agendamentoRepository.findById(id)

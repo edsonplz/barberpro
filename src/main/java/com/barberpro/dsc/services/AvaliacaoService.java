@@ -1,6 +1,7 @@
 package com.barberpro.dsc.services;
 
 import com.barberpro.dsc.dto.AvaliacaoRequestDTO;
+import com.barberpro.dsc.dto.AvaliacaoResponseDTO;
 import com.barberpro.dsc.models.Agendamento;
 import com.barberpro.dsc.models.Avaliacao;
 import com.barberpro.dsc.models.Barbeiro;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List; // IMPORTAR
+import java.util.stream.Collectors;
 
 @Service
 public class AvaliacaoService {
@@ -26,8 +28,12 @@ public class AvaliacaoService {
         Agendamento agendamento = agendamentoRepository.findById(idAgendamento)
                 .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
 
-        if (agendamento.getStatus() != StatusAgendamento.CONCLUIDO) { /* ... */ }
-        if (agendamento.getAvaliacao() != null) { /* ... */ }
+        if (agendamento.getStatus() != StatusAgendamento.CONCLUIDO) {
+            throw new IllegalStateException("Só é possível avaliar agendamentos concluídos.");
+        }
+        if (agendamento.getAvaliacao() != null) {
+            throw new IllegalStateException("Este agendamento já foi avaliado.");
+        }
 
         Avaliacao novaAvaliacao = new Avaliacao();
         novaAvaliacao.setNota(dto.nota());
@@ -36,6 +42,15 @@ public class AvaliacaoService {
         avaliacaoRepository.save(novaAvaliacao);
 
         recalcularMediaBarbeiro(agendamento.getBarbeiro());
+    }
+
+    @Transactional(readOnly = true)
+    public List<AvaliacaoResponseDTO> listarPorBarbeiro(Long idBarbeiro) {
+        List<Avaliacao> avaliacoes = avaliacaoRepository.findByAgendamentoBarbeiroId(idBarbeiro);
+
+        return avaliacoes.stream()
+                .map(AvaliacaoResponseDTO::new)
+                .collect(Collectors.toList());
     }
 
     private void recalcularMediaBarbeiro(Barbeiro barbeiro) {
