@@ -30,4 +30,15 @@ public class ServicoController {
                 .buildAndExpand(servicoCriado.id()).toUri();
         return ResponseEntity.created(uri).body(servicoCriado);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ServicoResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody ServicoRequestDTO dto) {
+        return ResponseEntity.ok(servicoService.atualizar(id,dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ServicoResponseDTO> deletar(@PathVariable Long id) {
+        servicoService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }
