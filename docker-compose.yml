@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Serviço do Banco de Dados PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: barberpro-db
+    restart: always
+    environment:
+      - POSTGRES_DB=barberpro
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Serviço da sua API BarberPro
+  api:
+    container_name: barberpro-api
+    # Constrói a imagem a partir do Dockerfile no diretório atual (.)
+    build: .
+    restart: on-failure
+    # Garante que o serviço 'db' inicie antes do serviço 'api'
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    # Variáveis de ambiente para configurar a conexão com o banco de dados
+    # Estas variáveis sobrescrevem as que estão no seu application.properties
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/barberpro
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - JWT_SECRET=${JWT_SECRET} # Pega o segredo de uma variável de ambiente ou ficheiro .env
+
+# Define um volume nomeado para persistir os dados do PostgreSQL
+volumes:
+  postgres_data:

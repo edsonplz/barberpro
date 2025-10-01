@@ -37,6 +37,8 @@ public class TokenFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                System.out.println("Permissões no SecurityContext: " + userDetails.getAuthorities());
             }
         }
 

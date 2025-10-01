@@ -31,6 +31,7 @@ public class ServicoService {
         novoServico.setNome(dto.nome());
         novoServico.setDescricao(dto.descricao());
         novoServico.setDuracaoMinutos(dto.duracaoMinutos());
+        novoServico.setPreco(dto.preco());
 
         Servico servicoSalvo = servicoRepository.save(novoServico);
         return new ServicoResponseDTO(servicoSalvo);
@@ -44,6 +45,7 @@ public class ServicoService {
         servico.setNome(dto.nome());
         servico.setDescricao(dto.descricao());
         servico.setDuracaoMinutos(dto.duracaoMinutos());
+        servico.setPreco(dto.preco());
 
         Servico servicoAtualizado = servicoRepository.save(servico);
         return new ServicoResponseDTO(servicoAtualizado);

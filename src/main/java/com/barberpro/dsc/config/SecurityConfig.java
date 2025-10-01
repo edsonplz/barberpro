@@ -1,3 +1,4 @@
+
 package com.barberpro.dsc.config;
 
 import com.barberpro.dsc.config.filter.TokenFilter;
@@ -26,11 +27,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())) // <-- ADICIONAR ESTA LINHA PARA PERMITIR FRAMES
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Rotas Públicas
-                        .requestMatchers("/h2-console/**").permitAll() // <-- ADICIONAR ESTA LINHA PARA LIBERAR O CONSOLE
+                        // Rotas para o Swagger
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-resources/**").permitAll()
+
+                        // Rotas Públicas da sua API
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/clientes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/servicos").permitAll()
