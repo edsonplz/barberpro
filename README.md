@@ -55,7 +55,7 @@ A API foi construída para ser **robusta**, **segura** e **escalável**, gerenci
 Clone este repositório para a sua máquina:
 
 ```bash
-git clone https://github.com/seu-usuario/barberpro.git
+git clone https://github.com/edsonplz/barberpro.git
 cd barberpro
 ```
 
